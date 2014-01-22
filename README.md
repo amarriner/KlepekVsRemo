@@ -1,6 +1,8 @@
 # KlepekVsRemo
-### A twitter bot that tweets the results of Chris Remo and Patrick Klepek's Spelunky grudge matches
-### https://twitter.com/KlepekVsRemo
+*A twitter bot that tweets the results of Chris Remo and Patrick Klepek's Spelunky grudge matches to [@KlepekVsRemo](https://twitter.com/KlepekVsRemo)*
+
+Utilizes the [CodeBird Twitter Library](https://github.com/jublonet/codebird-php), and the text stroke function for PHP 
+images was lifted from [here](http://www.johnciacia.com/2010/01/04/using-php-and-gd-to-add-border-to-text/).
 
 This bot runs on a cron every 10 minutes. It investigates the Steam leaderboards for Spelunky Daily Challenges on the date 
 it runs. If it finds Chris Remo or Patrick Klepek's score they will be retrieved and stored in a database. It will then 
@@ -12,7 +14,7 @@ wanted to perform. Should probably be done in something more elegant, but there 
 history up on GitHub, but from here on out I should. Still needs a lot of cleanup. Speaking of which, the tracking of 
 tweets via flat files filled with the date is dumb and should be removed at some point. Cheap hack.
 
-Things it does:
+**Things it does:**
  * Gets score and level data for a Daily Challenge run
  * Attempts to find the corresponding Twitch.tv video URL for inclusion in the tweet
  * Builds a daily image "badge" that includes various run information
