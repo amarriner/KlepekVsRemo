@@ -20,3 +20,13 @@ tweets via flat files filled with the date is dumb and should be removed at some
  * Builds a daily image "badge" that includes various run information
  * Tweets individual run data (including the badge)
  * Tweets the winner
+
+**TODO:**
+ * Fix checking for tweet via flat file, investigate twitter feed instead
+ * Move functions to a different file
+ * Move class to a different file
+ * Probably more?
+
+#### Sample Badge
+
+![alt-text](https://github.com/amarriner/KlepekVsRemo/tree/da6e8f44e277b6b53f21cdd38fa5a0dc5334e070/images/daily_76561197969204208.png "Sample Badge")
