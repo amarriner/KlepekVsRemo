@@ -29,4 +29,4 @@ tweets via flat files filled with the date is dumb and should be removed at some
 
 #### Sample Badge
 
-![alt-text](https://github.com/amarriner/KlepekVsRemo/tree/da6e8f44e277b6b53f21cdd38fa5a0dc5334e070/images/daily_76561197969204208.png "Sample Badge")
+![alt-text](https://raw2.github.com/amarriner/KlepekVsRemo/da6e8f44e277b6b53f21cdd38fa5a0dc5334e070/images/daily_76561197969204208.png "Sample Badge")
