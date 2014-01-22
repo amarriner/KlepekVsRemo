@@ -25,6 +25,9 @@ tweets via flat files filled with the date is dumb and should be removed at some
  * Fix checking for tweet via flat file, investigate twitter feed instead
  * Move functions to a different file
  * Move class to a different file
+ * Clean up "determine winner" logic
+ * Fix Twitch function so that timezone difference won't be a problem
+ * Comment more thoroughly
  * Probably more?
 
 #### Sample Badge

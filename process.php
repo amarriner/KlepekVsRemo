@@ -3,8 +3,10 @@
    require_once('/home1/amarrine/www/steam/codebird-php-2.4.1/src/codebird.php');
    require_once('/home1/amarrine/www/steam/twitter.php');
 
+   // An attempt to get the correct daily challenge day regardless of server timezone
    date_default_timezone_set('UTC');
 
+   // Dumb hack to prevent remote access
    if ($_REQUEST['wizard'] != 'iDl3') {
       print "\nERROR\n\n";
       exit;
@@ -13,6 +15,7 @@
       print "\nPROCESSING\n\n";
    }
    
+   // Small class to hold player data
    class player {
       var $hashtag;
       var $level;
@@ -48,6 +51,7 @@
       return imagettftext($image, $size, $angle, $x, $y, $textcolor, $fontfile, $text);
    }
 
+   // Creates daily badge for the given player
    function create_image($player) {
       $i = imagecreatefrompng("images/daily.png");
 
@@ -67,6 +71,7 @@
       imagedestroy($i);
    }
 
+   // Checks to see if the player's data has already been tweeted
    function check_today($player) {
       $found = 1;
 
@@ -78,6 +83,7 @@
       return $found;
    }
 
+   // Retrieves the player's leaderboard data for today
    function get_leaderboard_data($player, $leaderboard) {
       $steamid = $player->steamid;
       $score = -1;
@@ -93,12 +99,14 @@
          if ($value['steamid'] == $steamid) {
             $player->score = $value['score'];
 
+            // Levels ares stored as hex values from 0-19, so convert them into what's shown on the leaderboards in-game
             $level = hexdec(substr($value['details'], 8, 2));
             $player->level = ceil($level / 4) . "-" . ($level % 4 == 0? 4 : ($level % 4));
          }
       }
    }
 
+   // Find the id for today's daily challenge leaderboard
    function get_todays_leaderboard() {
       $leaderboard = '';
 
@@ -119,6 +127,9 @@
       return $leaderboard;
    }
 
+   // Attempt to match a twitch URL with the player's daily challenge run
+   // Looks through their twitch past broadcasts and finds one on today's date that is labelled Spelunky
+   // Will have problems with timezones if the runs are recorded before midnight server time
    function get_twitch_url($api) {
       $url = null;
 
@@ -139,6 +150,7 @@
       return $url;
    }
 
+   // Tweet individual results
    function post_tweet($cb, $player) {
       $todays_date = date('m/d/Y');
       $params = array(
@@ -152,10 +164,11 @@
          'media[]' => '/home1/amarrine/www/steam/daily_' . $player->steamid . '.png'
       );
 
-   //   $reply = $cb->statuses_updateWithMedia($params);
+      $reply = $cb->statuses_updateWithMedia($params);
       file_put_contents('/home1/amarrine/www/steam/' . $player->steamid, date('m/d/Y'));
    }
 
+   // Tweet winner
    function post_winner($cb, $player1, $player2) {
       $found = 1;
 
@@ -176,13 +189,14 @@
          );
 
          print "Posting winner!\n";
-   //      $reply = $cb->statuses_update($params);
+         $reply = $cb->statuses_update($params);
          file_put_contents('/home1/amarrine/www/steam/winner', $todays_date);
       }
    }
 
+   // Store player results in a database table
+   // Currently not used for anything
    function save_score($player) {
-
       $result = mysql_query("select * from spelunky_scores " .
                             " where scores_players_id = " . $player->steamid . 
                             "   and scores_date = date('" . date('Y-m-d') . "')");
@@ -206,23 +220,28 @@
       }
    }
 
+   // Actual keys stored in a file outside the git repository
    $consumer_key = $_CONSUMER_KEY;
    $consumer_secret = $_CONSUMER_SECRET;
 
    $access_token = $_ACCESS_TOKEN;
    $access_token_secret = $_ACCESS_TOKEN_SECRET;
 
+   // Set up Codebird object
    \Codebird\Codebird::setConsumerKey($consumer_key, $consumer_secret);
    $cb = \Codebird\Codebird::getInstance();
    $cb->setToken($access_token, $access_token_secret);
 
+   // TODO: Use this in Steam API URL's
    $spelunky_app_id = '239350';
 
+   // Determine today's leaderboard
    $todays_date = date('m/d/Y');
    $leaderboard = get_todays_leaderboard();
    print "Today: $todays_date \n";
    print "Leaderboard: $leaderboard \n";
 
+   // Loop through players table and process each player's daily scores
    $players = array();
    $result = mysql_query('select * from spelunky_players');
    while ($row = mysql_fetch_array($result)) {
@@ -251,7 +270,8 @@
       array_push($players, $the_player);
    }
 
-
+   // Determine winner and tweet if necessary
+   // TODO: This needs work! Ugly
    if (count($players) == 2) {
       $player1 = $players[0];
       $player2 = $players[1];
