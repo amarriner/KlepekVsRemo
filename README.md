@@ -9,10 +9,15 @@ it runs. If it finds Chris Remo or Patrick Klepek's score they will be retrieved
 tweet their results as well. If both players have completed the Daily Challenge for that day, it will also determine who 
 had the highest score and tweet the winner. 
 
-I'm not sure why I picked PHP other than I knew how to use it more than anything else that would perform the tasks I 
-wanted to perform. Should probably be done in something more elegant, but there it is. I don't have a lot of the version 
-history up on GitHub, but from here on out I should. Still needs a lot of cleanup. Speaking of which, the tracking of 
-tweets via flat files filled with the date is dumb and should be removed at some point. Cheap hack.
+I'm not sure why I picked PHP other than I knew how to use it more than 
+anything else that would perform the tasks I wanted to perform. I was 
+mainly interested in learning about Steam API data and interfacing with 
+Twitter and wasn't really ready to add a new langage on top of that. 
+Should probably be done in something more elegant, but there it is. I 
+don't have a lot of the version history up on GitHub, but from here on 
+out I should. Also, no branching! Playing with fire, I know, but my 
+flimsy justification is that I'm the only one working on this. The whole 
+thing still needs a lot of cleanup in general.
 
 **Things it does:**
  * Gets score and level data for a Daily Challenge run
@@ -27,6 +32,7 @@ tweets via flat files filled with the date is dumb and should be removed at some
  * Move class to a different file
  * Clean up "determine winner" logic
  * Fix Twitch function so that timezone difference won't be a problem
+ * Clean up all hard-coded references to pwd
  * Comment more thoroughly
  * Probably more?
 

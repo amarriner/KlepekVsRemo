@@ -1,20 +1,16 @@
 <?php
+   // Database connection setup
    require_once('/home1/amarrine/www/steam/db.php');
+
+   // Codebird PHP Twitter Library
    require_once('/home1/amarrine/www/steam/codebird-php-2.4.1/src/codebird.php');
+
+   // Twitter Keys
    require_once('/home1/amarrine/www/steam/twitter.php');
 
    // An attempt to get the correct daily challenge day regardless of server timezone
    date_default_timezone_set('UTC');
 
-   // Dumb hack to prevent remote access
-   if ($_REQUEST['wizard'] != 'iDl3') {
-      print "\nERROR\n\n";
-      exit;
-   }
-   else {
-      print "\nPROCESSING\n\n";
-   }
-   
    // Small class to hold player data
    class player {
       var $hashtag;
@@ -161,7 +157,7 @@
                          "Run ended at " . 
                          $player->level . " \n" . 
                          $player->twitch,
-         'media[]' => '/home1/amarrine/www/steam/daily_' . $player->steamid . '.png'
+         'media[]' => '/home1/amarrine/www/steam/images/daily_' . $player->steamid . '.png'
       );
 
       $reply = $cb->statuses_updateWithMedia($params);
