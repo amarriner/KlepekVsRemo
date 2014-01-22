@@ -9,7 +9,8 @@ had the highest score and tweet the winner.
 
 I'm not sure why I picked PHP other than I knew how to use it more than anything else that would perform the tasks I 
 wanted to perform. Should probably be done in something more elegant, but there it is. I don't have a lot of the version 
-history up on GitHub, but from here on out I should. Still needs a lot of cleanup.
+history up on GitHub, but from here on out I should. Still needs a lot of cleanup. Speaking of which, the tracking of 
+tweets via flat files filled with the date is dumb and should be removed at some point. Cheap hack.
 
 Things it does:
  * Gets score and level data for a Daily Challenge run
