@@ -1,15 +1,25 @@
 <?php
+   // Various Constants
+   require_once('constants.php');
+
    // Database connection setup
-   require_once('/home1/amarrine/www/steam/db.php');
+   require_once(_PWD . '/db.php');
 
    // Codebird PHP Twitter Library
-   require_once('/home1/amarrine/www/steam/codebird-php-2.4.1/src/codebird.php');
-
-   // Twitter Keys
-   require_once('/home1/amarrine/www/steam/twitter.php');
+   require_once(_PWD . '/codebird-php-2.4.1/src/codebird.php');
 
    // An attempt to get the correct daily challenge day regardless of server timezone
    date_default_timezone_set('UTC');
+
+   // Trying to prevent remote execution, though actually it wouldn't really be that big
+   // of a deal since a remote execution would do the same thing as a normal cron run
+   if ($_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']) {
+      print "\n\nERROR!\n\n";
+      exit;
+   }
+   else {
+      print "\n\nPROCESSING...\n\n";
+   }
 
    // Small class to hold player data
    class player {
@@ -54,8 +64,8 @@
       $white = imagecolorallocate($i, 255, 255, 255);
       $black = imagecolorallocate($i,   0,   0,   0);
 
-      $icon = imagecreatefromjpeg('/home1/amarrine/www/steam/images/' . $player->steamid . '.jpg');
-      list($width, $height) = getimagesize('/home1/amarrine/www/steam/images/' . $player->steamid . '.jpg');
+      $icon = imagecreatefromjpeg(_PWD . '/images/' . $player->steamid . '.jpg');
+      list($width, $height) = getimagesize(_PWD . '/images/' . $player->steamid . '.jpg');
       imagecopy($i, $icon, 19, 38, 0, 0, $width, $height);
       imagettfstroketext($i, 32.0, 0, 207, 72, $white, $black, 'fonts/Tekton-Bold', $player->string, 3);
       imagettfstroketext($i, 32.0, 0, 182, 210, $white, $black, 'fonts/Tekton-Bold', $player->score, 3);
@@ -63,7 +73,7 @@
       imagettfstroketext($i, 12.0, 0, 8, 184, $white, $black, 'fonts/Tekton-Bold', date('m/d/Y'), 1);
       imagettfstroketext($i, 10.0, 0, 8, 200, $white, $black, 'fonts/Tekton-Bold', '@KlepekVsRemo', 1);
 
-      imagepng($i, '/home1/amarrine/www/steam/images/daily_' . $player->steamid . '.png');
+      imagepng($i, _PWD . '/images/daily_' . $player->steamid . '.png');
       imagedestroy($i);
    }
 
@@ -71,7 +81,7 @@
    function check_today($player) {
       $found = 1;
 
-      $last = trim(file_get_contents('/home1/amarrine/www/steam/' . $player->steamid));
+      $last = trim(file_get_contents(_PWD . '/' . $player->steamid));
       if ($last != date('m/d/Y')) {
          $found = 0;
       }
@@ -157,11 +167,11 @@
                          "Run ended at " . 
                          $player->level . " \n" . 
                          $player->twitch,
-         'media[]' => '/home1/amarrine/www/steam/images/daily_' . $player->steamid . '.png'
+         'media[]' => _PWD . '/daily_' . $player->steamid . '.png'
       );
 
       $reply = $cb->statuses_updateWithMedia($params);
-      file_put_contents('/home1/amarrine/www/steam/' . $player->steamid, date('m/d/Y'));
+      file_put_contents(_PWD . '/' . $player->steamid, date('m/d/Y'));
    }
 
    // Tweet winner
@@ -169,7 +179,7 @@
       $found = 1;
 
       $todays_date = date('m/d/Y');
-      $last = trim(file_get_contents('/home1/amarrine/www/steam/winner'));
+      $last = trim(file_get_contents(_PWD . '/winner'));
       if ($last != $todays_date) {
          $found = 0;
       }
@@ -186,7 +196,7 @@
 
          print "Posting winner!\n";
          $reply = $cb->statuses_update($params);
-         file_put_contents('/home1/amarrine/www/steam/winner', $todays_date);
+         file_put_contents(_PWD . '/winner', $todays_date);
       }
    }
 
@@ -217,11 +227,11 @@
    }
 
    // Actual keys stored in a file outside the git repository
-   $consumer_key = $_CONSUMER_KEY;
-   $consumer_secret = $_CONSUMER_SECRET;
+   $consumer_key = _CONSUMER_KEY;
+   $consumer_secret = _CONSUMER_SECRET;
 
-   $access_token = $_ACCESS_TOKEN;
-   $access_token_secret = $_ACCESS_TOKEN_SECRET;
+   $access_token = _ACCESS_TOKEN;
+   $access_token_secret = _ACCESS_TOKEN_SECRET;
 
    // Set up Codebird object
    \Codebird\Codebird::setConsumerKey($consumer_key, $consumer_secret);
