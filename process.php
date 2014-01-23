@@ -66,6 +66,7 @@
 
       $icon = imagecreatefromjpeg(_PWD . '/images/' . $player->steamid . '.jpg');
       list($width, $height) = getimagesize(_PWD . '/images/' . $player->steamid . '.jpg');
+      imagefilledrectangle($i, 18, 37, 84, 103, $white);
       imagecopy($i, $icon, 19, 38, 0, 0, $width, $height);
       imagettfstroketext($i, 32.0, 0, 207, 72, $white, $black, 'fonts/Tekton-Bold', $player->string, 3);
       imagettfstroketext($i, 32.0, 0, 182, 210, $white, $black, 'fonts/Tekton-Bold', $player->score, 3);
