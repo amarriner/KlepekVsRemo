@@ -50,7 +50,7 @@
 
    // Loop through players table and process each player's daily scores
    $players = array();
-   $result = mysql_query('select * from spelunky_players');
+   $result = mysql_query('select * from spelunky_players order by players_id desc');
    while ($row = mysql_fetch_array($result)) {
       $the_player = new player();
       $the_player->steamid = $row['players_id'];
@@ -61,7 +61,8 @@
       get_leaderboard_data($the_player, $leaderboard);
       print $the_player->string . ": (" 
                . $the_player->steamid . ") " 
-               . $the_player->score . " " 
+               . $the_player->score . " "
+               . $the_player->hashtag . " "
                . $the_player->level . "\n";
       print $the_player->string . " Twitch: " . $the_player->twitch . "\n";
 
@@ -82,6 +83,8 @@
    if (count($players) == 2) {
       $player1 = $players[0];
       $player2 = $players[1];
+
+      create_winner_image($player1, $player2);
 
       if ($player1->score > 0 && $player2->score > 0) {
          if ($player1->score != $player2->score) {

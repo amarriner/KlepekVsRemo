@@ -24,9 +24,80 @@
       return imagettftext($image, $size, $angle, $x, $y, $textcolor, $fontfile, $text);
    }
 
+   // Creates winner image for winning tweet
+   function create_winner_image($player_left, $player_right) {
+      $i = imagecreatefrompng(_PWD . '/images/winner.png');
+
+      $levelsketch = imagecreatefrompng(_PWD . '/images/levelsketch.png');
+
+      // Coordinates for background images in the levelsketch.png file
+      // Backgrounds are around 325x185
+      $backgrounds = array(
+         array(0,    0),
+         array(325,  0),
+         array(650,  0),
+         array(0,   185),
+         array(325, 185)
+      );
+
+      $white = imagecolorallocate($i, 255, 255, 255);
+      $black = imagecolorallocate($i,   0,   0,   0);
+
+      // Get left side player icon
+      $icon_left = imagecreatefromjpeg(_PWD . '/images/' . $player_left->steamid . '.jpg');
+      list($width_left, $height_left) = getimagesize(_PWD . '/images/' . $player_left->steamid . '.jpg');
+      $left_text = ($player_left->score > $player_right->score ? $player_left->hashtag : date('m-d-Y'));
+      $left_level = substr($player_left->level, 0, 1) - 1;
+      
+      imagefilledrectangle($i, 131, 241, 132 + ($width_left / 2), 242 + ($height_left / 2), $white);
+      imagecopyresized($i, $icon_left, 132, 242, 0, 0, ($width_left / 2), ($height_left / 2), $width_left, $height_left);
+
+      // Copy left player level to image
+      imagecopy($i, $levelsketch, 95, 30, $backgrounds[$left_level][0], $backgrounds[$left_level][1], 325, 185);
+
+      // Fill out left side of book text
+      imagettfstroketext($i, 24.0, 0, 175, 265, $white, $black, 'fonts/Tekton-Bold', $player_left->string, 3);
+      imagettfstroketext($i, 20.0, 0, 145, 310, $white, $black, 'fonts/Tekton-Bold', 'Level ' .$player_left->level, 3);
+      imagettfstroketext($i, 20.0, 0, 145, 350, $white, $black, 'fonts/Tekton-Bold', $player_left->score, 3);
+      imagettftext($i, 16.0, 0, 210, 433, $black, 'fonts/Tekton-Bold', $left_text);
+
+      // Get right side player icon
+      $icon_right = imagecreatefromjpeg(_PWD . '/images/' . $player_right->steamid . '.jpg');
+      list($width_right, $height_right) = getimagesize(_PWD . '/images/' . $player_right->steamid . '.jpg');
+      $right_text = ($player_right->score > $player_left->score ? $player_right->hashtag : date('m-d-Y'));
+      $right_level = substr($player_right->level, 0, 1) - 1;
+
+      imagefilledrectangle($i, 540, 241, 542 + ($width_right / 2), 242 + ($height_right / 2), $white);
+      imagecopyresized($i, $icon_right, 542, 242, 0, 0, ($width_right / 2), ($height_right / 2), $width_right, $height_right);
+   
+      // Copy right player level to image
+      imagecopy($i, $levelsketch, 485, 30, $backgrounds[$right_level][0], $backgrounds[$right_level][1], 325, 185);
+
+      // Fill out right side book text
+      imagettfstroketext($i, 24.0, 0, 583, 265, $white, $black, 'fonts/Tekton-Bold', $player_right->string, 3);
+      imagettfstroketext($i, 20.0, 0, 678, 310, $white, $black, 'fonts/Tekton-Bold', 'Level ' . $player_right->level, 3);
+      imagettfstroketext($i, 20.0, 0, 678, 350, $white, $black, 'fonts/Tekton-Bold', $player_right->score, 3);
+      imagettftext($i, 16.0, 0, 610, 433, $black, 'fonts/Tekton-Bold', $right_text);
+
+      imagettftext($i, 10.0, 0, 745, 470, $black, 'fonts/Tekton-Bold', '@KlepekVsRemo');
+
+      // Preserve transparency
+      imagealphablending($i, false);
+      imagesavealpha($i, true);
+
+      // Save with highest compression and lowest filesize
+      // Would like to decrease filesize further, but haven't been able to as yet
+      imagepng($i, _PWD . '/images/daily_winner.png', 9, PNG_ALL_FILTERS);
+
+      imagedestroy($levelsketch);
+      imagedestroy($icon_left);
+      imagedestroy($icon_right);
+      imagedestroy($i);      
+   }
+
    // Creates daily badge for the given player
    function create_image($player) {
-      $i = imagecreatefrompng("images/daily.png");
+      $i = imagecreatefrompng(_PWD . '/images/daily.png');
 
       $white = imagecolorallocate($i, 255, 255, 255);
       $black = imagecolorallocate($i,   0,   0,   0);
@@ -42,6 +113,7 @@
       imagettfstroketext($i, 10.0, 0, 8, 200, $white, $black, 'fonts/Tekton-Bold', '@KlepekVsRemo', 1);
 
       imagepng($i, _PWD . '/images/daily_' . $player->steamid . '.png');
+      imagedestroy($icon);
       imagedestroy($i);
    }
 
@@ -159,11 +231,12 @@
                            $player1->score . ") defeated " . 
                            $player2->string . " ($" . 
                            $player2->score . ")! " .
-                           $player1->hashtag . " #Spelunky"
+                           $player1->hashtag . " #Spelunky",
+            'media[]' => _PWD . '/images/daily_winner.png'
          );
 
          print "Posting winner!\n";
-         $reply = $cb->statuses_update($params);
+         $reply = $cb->statuses_updateWithMedia($params);
          file_put_contents(_PWD . '/winner', $todays_date);
       }
    }
