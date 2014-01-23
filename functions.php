@@ -31,13 +31,13 @@
       $levelsketch = imagecreatefrompng(_PWD . '/images/levelsketch.png');
 
       // Coordinates for background images in the levelsketch.png file
-      // Backgrounds are around 325x185
+      // Backgrounds are around 330x190
       $backgrounds = array(
-         array(0,    0),
-         array(325,  0),
-         array(650,  0),
-         array(0,   185),
-         array(325, 185)
+         array(0,     0),
+         array(330,   0),
+         array(660,   0),
+         array(0,   190),
+         array(330, 190)
       );
 
       $white = imagecolorallocate($i, 255, 255, 255);
@@ -53,7 +53,7 @@
       imagecopyresized($i, $icon_left, 132, 242, 0, 0, ($width_left / 2), ($height_left / 2), $width_left, $height_left);
 
       // Copy left player level to image
-      imagecopy($i, $levelsketch, 95, 30, $backgrounds[$left_level][0], $backgrounds[$left_level][1], 325, 185);
+      imagecopy($i, $levelsketch, 95, 30, $backgrounds[$left_level][0], $backgrounds[$left_level][1], 330, 190);
 
       // Fill out left side of book text
       imagettfstroketext($i, 24.0, 0, 175, 265, $white, $black, 'fonts/Tekton-Bold', $player_left->string, 3);
@@ -71,7 +71,7 @@
       imagecopyresized($i, $icon_right, 542, 242, 0, 0, ($width_right / 2), ($height_right / 2), $width_right, $height_right);
    
       // Copy right player level to image
-      imagecopy($i, $levelsketch, 485, 30, $backgrounds[$right_level][0], $backgrounds[$right_level][1], 325, 185);
+      imagecopy($i, $levelsketch, 485, 30, $backgrounds[$right_level][0], $backgrounds[$right_level][1], 330, 190);
 
       // Fill out right side book text
       imagettfstroketext($i, 24.0, 0, 583, 265, $white, $black, 'fonts/Tekton-Bold', $player_right->string, 3);
@@ -231,7 +231,7 @@
                            $player1->score . ") defeated " . 
                            $player2->string . " ($" . 
                            $player2->score . ")! " .
-                           $player1->hashtag . " #Spelunky",
+                           $player1->hashtag . " #Spelunky \n",
             'media[]' => _PWD . '/images/daily_winner.png'
          );
 
