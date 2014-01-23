@@ -7,22 +7,21 @@ images was lifted from [here](http://www.johnciacia.com/2010/01/04/using-php-and
 This bot runs on a cron every 10 minutes. It investigates the Steam leaderboards for Spelunky Daily Challenges on the date 
 it runs. If it finds Chris Remo or Patrick Klepek's score they will be retrieved and stored in a database. It will then 
 tweet their results as well. If both players have completed the Daily Challenge for that day, it will also determine who 
-had the highest score and tweet the winner. 
+had the highest score and tweet the winner. It also builds a "winner image" with details of both runs, level backgrounds 
+for the level they ended on, and the hashtag of the winner.
 
-I'm not sure why I picked PHP other than I knew how to use it more than 
-anything else that would perform the tasks I wanted to perform. I was 
-mainly interested in learning about Steam API data and interfacing with 
-Twitter and wasn't really ready to add a new langage on top of that. 
-Should probably be done in something more elegant, but there it is. I 
-don't have a lot of the version history up on GitHub, but from here on 
-out I should. Also, no branching! Playing with fire, I know, but my 
-flimsy justification is that I'm the only one working on this. The whole 
-thing still needs a lot of cleanup in general.
+I'm not sure why I picked PHP other than I knew how to use it more than anything else that would perform the tasks I 
+wanted to perform. I was mainly interested in learning about Steam API data and interfacing with Twitter and wasn't really 
+ready to add a new langage on top of that. Should probably be done in something more elegant, but there it is. I don't 
+have a lot of the version history up on GitHub, but from here on out I should. Also, no branching! Playing with fire, I 
+know, but my flimsy justification is that I'm the only one working on this. The whole thing still needs a lot of cleanup 
+in general.
 
 **Things it does:**
  * Gets score and level data for a Daily Challenge run
  * Attempts to find the corresponding Twitch.tv video URL for inclusion in the tweet
  * Builds a daily image "badge" that includes various run information
+ * Builds a "winner image" that includes information for both runs
  * Tweets individual run data (including the badge)
  * Tweets the winner
 
@@ -38,6 +37,10 @@ thing still needs a lot of cleanup in general.
  * Comment more thoroughly
  * Probably more?
 
+#### Sample Winner Image
+
+![alt-text](https://pbs.twimg.com/media/BesF-sfCIAA6zIU.png:large "Sample Winner Image")
+
 #### Sample Badge
 
-![alt-text](https://raw2.github.com/amarriner/KlepekVsRemo/da6e8f44e277b6b53f21cdd38fa5a0dc5334e070/images/daily_76561197969204208.png "Sample Badge")
+![alt-text](https://pbs.twimg.com/media/Beryso-CUAAt4jm.png:large "Sample Badge")
