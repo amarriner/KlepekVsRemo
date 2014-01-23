@@ -27,6 +27,8 @@ thing still needs a lot of cleanup in general.
  * Tweets the winner
 
 **TODO:**
+ * Figure out why running from the shell on a cron causes errors because of the backslashes despite working correctly running it manually. It's running using wget at the moment which is kind of lame
+ * Possibly pull steam avatars every time? Probably not worth doing, but putting it here in case
  * Fix checking for tweet via flat file, investigate twitter feed instead
  * ~~Move functions to a different file~~
  * ~~Move class to a different file~~
