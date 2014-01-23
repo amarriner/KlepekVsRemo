@@ -203,26 +203,28 @@
    // Store player results in a database table
    // Currently not used for anything
    function save_score($player) {
-      $result = mysql_query("select * from spelunky_scores " .
-                            " where scores_players_id = " . $player->steamid . 
-                            "   and scores_date = date('" . date('Y-m-d') . "')");
+      if ($player->score >= 0 || $player->level) {
+         $result = mysql_query("select * from spelunky_scores " .
+                               " where scores_players_id = " . $player->steamid . 
+                               "   and scores_date = date('" . date('Y-m-d') . "')");
 
-      if (! ($row = mysql_fetch_array($result))) {
-         $insert = "insert into spelunky_scores (" . 
-               "scores_id, " . 
-               "scores_players_id, " .
-               "scores_date, " . 
-               "scores_score, " . 
-               "scores_level, " .
-               "scores_twitch) values (" . 
-               "null, " .
-               $player->steamid . ", " .
-               "date('" . date('Y-m-d') . "'), " . 
-               $player->score . ", " .
-               "'" . $player->level . "', " .
-               "'" . trim($player->twitch) . "')";
+         if (! ($row = mysql_fetch_array($result))) {
+            $insert = "insert into spelunky_scores (" . 
+                  "scores_id, " . 
+                  "scores_players_id, " .
+                  "scores_date, " . 
+                  "scores_score, " . 
+                  "scores_level, " .
+                  "scores_twitch) values (" . 
+                  "null, " .
+                  $player->steamid . ", " .
+                  "date('" . date('Y-m-d') . "'), " . 
+                  $player->score . ", " .
+                  "'" . $player->level . "', " .
+                  "'" . trim($player->twitch) . "')";
 
-         mysql_query($insert);
+            mysql_query($insert);
+         }
       }
    }
 
