@@ -135,7 +135,7 @@
                          "Run ended at " . 
                          $player->level . " \n" . 
                          $player->twitch,
-         'media[]' => _PWD . '/daily_' . $player->steamid . '.png'
+         'media[]' => _PWD . '/images/daily_' . $player->steamid . '.png'
       );
 
       $reply = $cb->statuses_updateWithMedia($params);
