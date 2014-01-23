@@ -28,11 +28,11 @@ thing still needs a lot of cleanup in general.
 
 **TODO:**
  * Fix checking for tweet via flat file, investigate twitter feed instead
- * Move functions to a different file
- * Move class to a different file
+ * ~~Move functions to a different file~~
+ * ~~Move class to a different file~~
  * Clean up "determine winner" logic
  * Fix Twitch function so that timezone difference won't be a problem
- * Clean up all hard-coded references to pwd
+ * ~~Clean up all hard-coded references to pwd~~
  * Comment more thoroughly
  * Probably more?
 
