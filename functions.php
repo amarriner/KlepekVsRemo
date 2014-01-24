@@ -147,7 +147,7 @@
       $right_text = ($player_right->score > $player_left->score ? $player_right->hashtag : date('m-d-Y'));
       $right_level = substr($player_right->level, 0, 1) - 1;
 
-      imagefilledrectangle($i, 540, 241, 542 + ($width_right / 2), 242 + ($height_right / 2), $white);
+      imagefilledrectangle($i, 541, 241, 542 + ($width_right / 2), 242 + ($height_right / 2), $white);
       imagecopyresized($i, $icon_right, 542, 242, 0, 0, ($width_right / 2), ($height_right / 2), $width_right, $height_right);
 
       // Place right side character. Have to flip it horizontally. My installed version of PHP doesn't have the 
@@ -222,7 +222,7 @@
 
       $icon = imagecreatefromjpeg(_PWD . '/images/' . $player->steamid . '.jpg');
       list($width, $height) = getimagesize(_PWD . '/images/' . $player->steamid . '.jpg');
-      imagefilledrectangle($i, 18, 37, 84, 103, $white);
+      imagefilledrectangle($i, 18, 37, 83, 102, $white);
       imagecopy($i, $icon, 19, 38, 0, 0, $width, $height);
       imagettfstroketext($i, 32.0, 0, 207, 72, $white, $black, 'fonts/Tekton-Bold', $player->string, 3);
       imagettfstroketext($i, 32.0, 0, 182, 210, $white, $black, 'fonts/Tekton-Bold', $player->score, 3);
