@@ -193,6 +193,30 @@
    function create_image($player) {
       $i = imagecreatefrompng(_PWD . '/images/daily.png');
 
+      // Characters are stored as a hex value on the leaderboards. The process.php script translates them
+      // to decimal which is used as the index for this array
+      $colors = array(
+         'orange',
+         'red',
+         'green',
+         'blue',
+         'white',
+         'pink',
+         'yellow',
+         'brown',
+         'purple',
+         'black',
+         'cyan',
+         'lime',
+         'dlc1',
+         'dlc2',
+         'dlc3',
+         'dlc4',
+         'dlc5',
+         'dlc7',
+         'dlc8'
+      );
+
       $white = imagecolorallocate($i, 255, 255, 255);
       $black = imagecolorallocate($i,   0,   0,   0);
 
@@ -203,8 +227,11 @@
       imagettfstroketext($i, 32.0, 0, 207, 72, $white, $black, 'fonts/Tekton-Bold', $player->string, 3);
       imagettfstroketext($i, 32.0, 0, 182, 210, $white, $black, 'fonts/Tekton-Bold', $player->score, 3);
       imagettfstroketext($i, 32.0, 0, 392, 210, $white, $black, 'fonts/Tekton-Bold', $player->level, 3);
-      imagettfstroketext($i, 12.0, 0, 8, 184, $white, $black, 'fonts/Tekton-Bold', date('m/d/Y'), 1);
-      imagettfstroketext($i, 10.0, 0, 8, 200, $white, $black, 'fonts/Tekton-Bold', '@KlepekVsRemo', 1);
+      imagettftext($i, 14.0, 0, 220, 17, $white, 'fonts/Tekton-Bold', date('m/d/Y'));
+      imagettftext($i, 10.0, 0, 2, 252, $white, 'fonts/Tekton-Bold', '@KlepekVsRemo');
+
+      $character = imagecreatefrompng(_PWD . '/images/char_' . $colors[$player->character] . '.png');
+      imagecopy($i, $character, 13, 155, 0, 880, 80, 80);
 
       imagepng($i, _PWD . '/images/daily_' . $player->steamid . '.png');
       imagedestroy($icon);
