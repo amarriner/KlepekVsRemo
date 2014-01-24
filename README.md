@@ -3,7 +3,7 @@
 
 Utilizes the [CodeBird Twitter Library](https://github.com/jublonet/codebird-php). The text stroke function for PHP 
 images was lifted from [here](http://www.johnciacia.com/2010/01/04/using-php-and-gd-to-add-border-to-text/). Since the 
-version of PHP I'm using doesn't include the native imageflip function, I pulled one from [Stack 
+version of PHP I'm using doesn't include the native imageflip function, I grabbed one from [Stack 
 Exchange](http://stackoverflow.com/questions/15811421/imageflip-in-php-is-undefined).
 
 All images were pulled from the PC version of [Spelunky HD](http://spelunkyworld.com) using [this extraction 
@@ -44,8 +44,8 @@ in general.
 
 #### Sample Winner Image
 
-![alt-text](https://pbs.twimg.com/media/BesF-sfCIAA6zIU.png:large "Sample Winner Image")
+![alt-text](https://pbs.twimg.com/media/BewzvNuCYAAFqKs.png:large "Sample Winner Image")
 
 #### Sample Badge
 
-![alt-text](https://pbs.twimg.com/media/Beryso-CUAAt4jm.png:large "Sample Badge")
+![alt-text](https://pbs.twimg.com/media/BewzeNZCQAA-Ibc.png:large "Sample Badge")

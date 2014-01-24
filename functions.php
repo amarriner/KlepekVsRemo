@@ -231,7 +231,7 @@
       imagettftext($i, 10.0, 0, 2, 252, $white, 'fonts/Tekton-Bold', '@KlepekVsRemo');
 
       $character = imagecreatefrompng(_PWD . '/images/char_' . $colors[$player->character] . '.png');
-      imagecopy($i, $character, 13, 155, 0, 880, 80, 80);
+      imagecopy($i, $character, 13, 153, 0, 880, 80, 80);
 
       imagepng($i, _PWD . '/images/daily_' . $player->steamid . '.png');
       imagedestroy($icon);
