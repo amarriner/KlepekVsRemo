@@ -1,8 +1,13 @@
 # KlepekVsRemo
 *A twitter bot that tweets the results of Chris Remo and Patrick Klepek's Spelunky grudge matches to [@KlepekVsRemo](https://twitter.com/KlepekVsRemo)*
 
-Utilizes the [CodeBird Twitter Library](https://github.com/jublonet/codebird-php), and the text stroke function for PHP 
-images was lifted from [here](http://www.johnciacia.com/2010/01/04/using-php-and-gd-to-add-border-to-text/).
+Utilizes the [CodeBird Twitter Library](https://github.com/jublonet/codebird-php). The text stroke function for PHP 
+images was lifted from [here](http://www.johnciacia.com/2010/01/04/using-php-and-gd-to-add-border-to-text/). Since the 
+version of PHP I'm using doesn't include the native imageflip function, I pulled one from [Stack 
+Exchange](http://stackoverflow.com/questions/15811421/imageflip-in-php-is-undefined).
+
+All images were pulled from the PC version of [Spelunky HD](http://spelunkyworld.com) using [this extraction 
+tool](http://mossmouth.com/forums/index.php?topic=3637.0).
 
 This bot runs on a cron every 10 minutes. It investigates the Steam leaderboards for Spelunky Daily Challenges on the date 
 it runs. If it finds Chris Remo or Patrick Klepek's score they will be retrieved and stored in a database. It will then 

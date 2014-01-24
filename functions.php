@@ -24,6 +24,49 @@
       return imagettftext($image, $size, $angle, $x, $y, $textcolor, $fontfile, $text);
    }
 
+   /**
+    * Flip (mirror) an image left to right.
+    * @url http://stackoverflow.com/questions/15811421/imageflip-in-php-is-undefined
+    * @param image  resource
+    * @param x      int
+    * @param y      int
+    * @param width  int
+    * @param height int
+    * @return bool
+    * @require PHP 3.0.7 (function_exists), GD1
+    */
+   function imageflip(&$image, $x = 0, $y = 0, $width = null, $height = null)
+   {
+       if ($width  < 1) $width  = imagesx($image);
+       if ($height < 1) $height = imagesy($image);
+       // Truecolor provides better results, if possible.
+       if (function_exists('imageistruecolor') && imageistruecolor($image))
+       {
+           $tmp = imagecreatetruecolor(1, $height);
+       }
+       else
+       {
+           $tmp = imagecreate(1, $height);
+       }
+
+       // My own change to preserve alpha (amarriner)
+       imagealphablending($tmp, false);
+       imagesavealpha($tmp, true);
+
+       $x2 = $x + $width - 1;
+       for ($i = (int) floor(($width - 1) / 2); $i >= 0; $i--)
+       {
+           // Backup right stripe.
+           imagecopy($tmp,   $image, 0,        0,  $x2 - $i, $y, 1, $height);
+           // Copy left stripe to the right.
+           imagecopy($image, $image, $x2 - $i, $y, $x + $i,  $y, 1, $height);
+           // Copy backuped right stripe to the left.
+           imagecopy($image, $tmp,   $x + $i,  $y, 0,        0,  1, $height);
+       }
+       imagedestroy($tmp);
+       return true;
+   }
+
    // Creates winner image for winning tweet
    function create_winner_image($player_left, $player_right) {
       $i = imagecreatefrompng(_PWD . '/images/winner.png');
@@ -40,6 +83,37 @@
          array(330, 190)
       );
 
+      // Coordinates for character images from the char_*.png files
+      // Character sprites are 80x80
+      $characters = array(
+         array(880, 720),      // Winner
+         array(720, 0)         // Loser
+      );
+
+      // Characters are stored as a hex value on the leaderboards. The process.php script translates them
+      // to decimal which is used as the index for this array
+      $colors = array(
+         'orange',
+         'red',
+         'green',
+         'blue',
+         'white',
+         'pink',
+         'yellow',
+         'brown',
+         'purple',
+         'black',
+         'cyan',
+         'lime',
+         'dlc1',
+         'dlc2',
+         'dlc3',
+         'dlc4',
+         'dlc5',
+         'dlc7',
+         'dlc8'
+      );
+
       $white = imagecolorallocate($i, 255, 255, 255);
       $black = imagecolorallocate($i,   0,   0,   0);
 
@@ -48,17 +122,23 @@
       list($width_left, $height_left) = getimagesize(_PWD . '/images/' . $player_left->steamid . '.jpg');
       $left_text = ($player_left->score > $player_right->score ? $player_left->hashtag : date('m-d-Y'));
       $left_level = substr($player_left->level, 0, 1) - 1;
-      
+
       imagefilledrectangle($i, 131, 241, 132 + ($width_left / 2), 242 + ($height_left / 2), $white);
       imagecopyresized($i, $icon_left, 132, 242, 0, 0, ($width_left / 2), ($height_left / 2), $width_left, $height_left);
 
+      // Place left side character 
+      $character_coords = ($player_left->score > $player_right->score ? $characters[0] : $characters[1]);
+      $character = imagecreatefrompng(_PWD . '/images/char_' . $colors[$player_left->character] . '.png');
+      imagecopy($i, $character, 300, 300, $character_coords[0], $character_coords[1], 80, 80);
+      imagedestroy($character);
+
       // Copy left player level to image
-      imagecopy($i, $levelsketch, 95, 30, $backgrounds[$left_level][0], $backgrounds[$left_level][1], 330, 190);
+      imagecopy($i, $levelsketch, 95, 28, $backgrounds[$left_level][0], $backgrounds[$left_level][1], 330, 190);
 
       // Fill out left side of book text
       imagettfstroketext($i, 24.0, 0, 175, 265, $white, $black, 'fonts/Tekton-Bold', $player_left->string, 3);
-      imagettfstroketext($i, 20.0, 0, 145, 310, $white, $black, 'fonts/Tekton-Bold', 'Level ' .$player_left->level, 3);
-      imagettfstroketext($i, 20.0, 0, 145, 350, $white, $black, 'fonts/Tekton-Bold', $player_left->score, 3);
+      imagettfstroketext($i, 20.0, 0, 145, 308, $white, $black, 'fonts/Tekton-Bold', 'Level ' .$player_left->level, 3);
+      imagettfstroketext($i, 20.0, 0, 145, 348, $white, $black, 'fonts/Tekton-Bold', $player_left->score, 3);
       imagettftext($i, 16.0, 0, 210, 433, $black, 'fonts/Tekton-Bold', $left_text);
 
       // Get right side player icon
@@ -69,14 +149,28 @@
 
       imagefilledrectangle($i, 540, 241, 542 + ($width_right / 2), 242 + ($height_right / 2), $white);
       imagecopyresized($i, $icon_right, 542, 242, 0, 0, ($width_right / 2), ($height_right / 2), $width_right, $height_right);
-   
+
+      // Place right side character. Have to flip it horizontally. My installed version of PHP doesn't have the 
+      // native imageflip function so I included one from Stack Overflow here. I modified it slightly to preserve
+      // transparency.
+      $character_coords = ($player_right->score > $player_left->score ? $characters[0] : $characters[1]);
+      $temp = imagecreatetruecolor(80, 80);
+      $character = imagecreatefrompng(_PWD . '/images/char_' . $colors[$player_right->character] . '.png');
+      imagealphablending($temp, false);
+      imagesavealpha($temp, true);
+      imagecopy($temp, $character, 0, 0, $character_coords[0], $character_coords[1], 80, 80);
+      imageflip($temp, IMG_FLIP_HORIZONTAL);
+      imagecopy($i, $temp, 535, 300, 0, 0, 80, 80);
+      imagedestroy($temp);
+      imagedestroy($character);
+         
       // Copy right player level to image
-      imagecopy($i, $levelsketch, 485, 30, $backgrounds[$right_level][0], $backgrounds[$right_level][1], 330, 190);
+      imagecopy($i, $levelsketch, 485, 28, $backgrounds[$right_level][0], $backgrounds[$right_level][1], 330, 190);
 
       // Fill out right side book text
       imagettfstroketext($i, 24.0, 0, 583, 265, $white, $black, 'fonts/Tekton-Bold', $player_right->string, 3);
-      imagettfstroketext($i, 20.0, 0, 678, 310, $white, $black, 'fonts/Tekton-Bold', 'Level ' . $player_right->level, 3);
-      imagettfstroketext($i, 20.0, 0, 678, 350, $white, $black, 'fonts/Tekton-Bold', $player_right->score, 3);
+      imagettfstroketext($i, 20.0, 0, 678, 308, $white, $black, 'fonts/Tekton-Bold', 'Level ' . $player_right->level, 3);
+      imagettfstroketext($i, 20.0, 0, 678, 348, $white, $black, 'fonts/Tekton-Bold', $player_right->score, 3);
       imagettftext($i, 16.0, 0, 610, 433, $black, 'fonts/Tekton-Bold', $right_text);
 
       imagettftext($i, 10.0, 0, 745, 470, $black, 'fonts/Tekton-Bold', '@KlepekVsRemo');
@@ -144,6 +238,9 @@
       foreach($array['entries']['entry'] as $key => $value) {
          if ($value['steamid'] == $steamid) {
             $player->score = $value['score'];
+
+            // Characters are stored as hex values, converting to decimal
+            $player->character = hexdec(substr($value['details'], 0, 2));
 
             // Levels ares stored as hex values from 0-19, so convert them into what's shown on the leaderboards in-game
             $level = hexdec(substr($value['details'], 8, 2));
@@ -256,12 +353,14 @@
                   "scores_date, " . 
                   "scores_score, " . 
                   "scores_level, " .
+                  "scores_character, " .
                   "scores_twitch) values (" . 
                   "null, " .
                   $player->steamid . ", " .
                   "date('" . date('Y-m-d') . "'), " . 
                   $player->score . ", " .
                   "'" . $player->level . "', " .
+                  $player->character . ", " . 
                   "'" . trim($player->twitch) . "')";
 
             mysql_query($insert);
