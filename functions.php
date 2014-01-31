@@ -370,7 +370,7 @@
    // Store player results in a database table
    // Currently not used for anything
    function save_score($player) {
-      if ($player->score >= 0 || $player->level) {
+      if ($player->score >= 0 && $player->level != '1-1') {
          $result = mysql_query("select * from spelunky_scores " .
                                " where scores_players_id = " . $player->steamid . 
                                "   and scores_date = date('" . date('Y-m-d') . "')");
