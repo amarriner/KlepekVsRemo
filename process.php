@@ -66,7 +66,10 @@
                . $the_player->level . "\n";
       print $the_player->string . " Twitch: " . $the_player->twitch . "\n";
 
-      create_image($the_player);
+      if (is_int($the_player->character)) {
+         create_image($the_player);
+      }
+
       save_score($the_player);
 
       $tweet_today = check_today($the_player);
@@ -84,7 +87,9 @@
       $player1 = $players[0];
       $player2 = $players[1];
 
-      create_winner_image($player1, $player2);
+      if (is_int($player1->score) && is_int($player2->score > 0)) {
+         create_winner_image($player1, $player2);
+      }
 
       if ($player1->score > 0 && $player2->score > 0) {
          if ($player1->score != $player2->score) {
